@@ -77,24 +77,14 @@ BOOL GetHMACSHA1(LPCSTR basestring, LPCSTR key, LPSTR output, DWORD size)
 		goto ErrorExit;
 	}
 
-	DWORD dwSize = 0;
-	CryptBinaryToStringA(pbHash, dwDataLen, CRYPT_STRING_BASE64, NULL, &dwSize);
-
-	LPSTR lpszText = (LPSTR)GlobalAlloc(GPTR, dwSize);
-	if (!lpszText) {
-		goto ErrorExit;
-	}
-
-	CryptBinaryToStringA(pbHash, dwDataLen, CRYPT_STRING_BASE64, lpszText, &dwSize);
+	CryptBinaryToStringA(pbHash, dwDataLen, CRYPT_STRING_BASE64, output, &size);
 	LPSTR p = 0, q = 0;
-	for (p = lpszText, q = lpszText; *p; p++) {
+	for (p = output, q = output; *p; p++) {
 		if (*p != '\r' && *p != '\n') {
 			*q++ = *p;
 		}
 	}
 	*q = 0;
-	(void)lstrcpynA(output, lpszText, size);
-	GlobalFree(lpszText);
 	bRet = TRUE;
 
 ErrorExit:
